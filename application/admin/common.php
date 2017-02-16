@@ -6,6 +6,32 @@
  * and open the template in the editor.
  */
 
+function p($arr)
+{
+    echo "<pre>";
+    print_r($arr);
+}
+
+/**
+ *  权限节点
+ * @param type $node
+ * @param type $pid
+ * @return type
+ */
+function node_merge($node, $pid=0)
+{
+  
+    $arr = array();
+    foreach($node as $v) {
+        if ($pid == $v['pid']) {
+            $v['child'] = node_merge($node, $v['id']);
+            $arr[] = $v;
+        }
+    }
+    
+    return $arr;
+}
+
 /**
  * dwz ajax 数据返回
  * @param type $statusCode ok:200, error:300, timeout:301
