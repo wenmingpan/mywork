@@ -60,8 +60,8 @@
 				<td>{$vo.email}</td>
 				<td>{$vo.status}</td>
 				<td>
-					<a title="删除" target="ajaxTodo" href="demo/common/ajaxDone.html?id=xxx" class="btnDel">删除</a>
-					<a title="编辑" target="navTab" href="demo_page4.html?id=xxx" class="btnEdit">编辑</a>
+					<a title="删除" target="ajaxTodo" href="admin/account/delete/id/{$vo.id}" class="btnDel">删除</a>
+					<a title="编辑" target="dialog" rel="account" target="add" href="admin/account/edit/id/{$vo.id}" class="btnEdit">编辑</a>
 				</td>
 			</tr>
 			{/foreach}

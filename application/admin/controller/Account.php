@@ -52,4 +52,52 @@ class Account extends Controller{
         }
     }
     
+    public function delete()
+    {
+        $params = Request::instance()->param();
+        $id = $params['id'];
+        
+        // 执行删除
+        $result = Db::table('user')->where('id', $id)->delete();
+        if($result) {
+            dwz_ajax_do(200, '删除成功', 'account', '');
+        } else {
+            dwz_ajax_do(300, '删除失败', 'account', '');
+        }
+    }
+    
+    public function edit()
+    {
+        // 添加入库
+        if (Request::instance()->isPost()) {
+            $params = Request::instance()->param();
+
+            $id = $params['id'];
+            $name = $params['name'];
+            $email = $params['email'];
+            $status = $params['status'];
+            $data = [
+                'name' => $name,
+                'email' => $email,
+                'status' => $status,
+                'updated_time' => time(),
+                ];
+            $updated = Db::table('user')
+                    ->where('id', $id)
+                    ->update($data);
+
+            if($updated) {     
+                dwz_ajax_do(200, '修改成功', 'account');
+            } else {
+                dwz_ajax_do(300, '修改失败', 'account');
+            }
+        }
+        
+        $params = Request::instance()->param();
+        $id = $params['id'];
+        $user = Db::table('user')->where('id', $id)->find();
+        
+        $this->assign('user',$user);
+        return view();
+    }
 }
