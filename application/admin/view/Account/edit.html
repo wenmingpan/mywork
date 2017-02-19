@@ -16,6 +16,13 @@
 				<input name="status"  type="radio" size="30" value="0" 
                                 {if condition="$user.status eq 0"}checked{/if}/>禁用
 			</p>
+                        <p>
+                            <label>分配角色：</label>
+                            {foreach name="$role" item="vo"}
+			<input type="checkbox" name="role_id[]" value="{$vo.id}" 
+						   {in name="vo.id" value="$role_id"}checked{/in}/>{$vo.name}
+                            {/foreach}
+                        </p>
 		</div>
 		<div class="formBar">
 			<ul>

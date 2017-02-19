@@ -23,6 +23,10 @@ class Account extends Controller{
     
     public function add()
     {
+        // 角色
+        $role = Db::table('role')->select();
+        $this->assign('role',$role);
+        
         return view();
     }
     
@@ -35,6 +39,8 @@ class Account extends Controller{
             $name = $params['name'];
             $email = $params['email'];
             $status = $params['status'];
+            $role_ids = empty($params['role_id']) ? array(): $params['role_id']; // 角色id
+          
             $data = [
                 'name' => $name,
                 'email' => $email,
@@ -43,8 +49,9 @@ class Account extends Controller{
                 'updated_time' => time(),
                 ];
             $res = Db::table('user')->insert($data);
-//            $userid = Db::table('user')->getLastInsID();
-            if($res) {     
+            $userid = Db::table('user')->getLastInsID();
+            if($res) {
+                $this->_setUserRole($userid, $role_ids);
                 dwz_ajax_do(200, '添加成功', 'account');
             } else {
                 dwz_ajax_do(300, '添加失败', 'account');
@@ -72,10 +79,12 @@ class Account extends Controller{
         if (Request::instance()->isPost()) {
             $params = Request::instance()->param();
 
-            $id = $params['id'];
+            $id = $params['id']; // 用户ID
             $name = $params['name'];
             $email = $params['email'];
             $status = $params['status'];
+            $role_ids = empty($params['role_id']) ? array(): $params['role_id']; // 角色id
+             
             $data = [
                 'name' => $name,
                 'email' => $email,
@@ -85,6 +94,8 @@ class Account extends Controller{
             $updated = Db::table('user')
                     ->where('id', $id)
                     ->update($data);
+            // 设置用户角色关系
+            $this->_setUserRole($id, $role_ids);
 
             if($updated) {     
                 dwz_ajax_do(200, '修改成功', 'account');
@@ -93,11 +104,52 @@ class Account extends Controller{
             }
         }
         
-        $params = Request::instance()->param();
-        $id = $params['id'];
-        $user = Db::table('user')->where('id', $id)->find();
+        // 进入列表
+        if (Request::instance()->isGet()) {
+            $params = Request::instance()->param();
+            
+            $id = $params['id'];
+            $user = Db::table('user')->where('id', $id)->find();
+            // 角色
+            $role = Db::table('role')->select();
+            // 通过userid 查询role_id
+            $role_ids = Db::table('user_role')->where('uid', $user['id'])->select();
+            $user_roleid = array_column($role_ids, 'role_id');
+            
+            $this->assign('user',$user);
+            $this->assign('role',$role);
+            $this->assign('role_id',$user_roleid);
+            return view();
+        }
         
-        $this->assign('user',$user);
-        return view();
+        
+    }
+    
+    /**
+     * 设置用户与角色之间的关联关系
+     * 
+     * @param type $userid
+     * @param type $role_ids
+     */
+    private function _setUserRole($userid, $role_ids=array())
+    {
+        // 通过userid 查询role_id
+        $res = Db::table('user_role')->where('uid', $userid)->select();
+        $user_roleid = array_column($res, 'role_id');
+        $result = array_diff($user_roleid, $role_ids); // 求差集,
+
+        // 修改用户权限信息
+        if ($result) {  // 有值说明删除
+            foreach ($result as $key => $value) {
+                Db::table('user_role')->where(['uid' => $userid, 'role_id' => $value])->delete();
+            }
+        } else { // 无值进行添加
+            foreach ($role_ids as $key => $value) {
+                if (!in_array($value, $user_roleid)) {
+                    $data = ['uid' => $userid, 'role_id' => $value, 'created_time'=> time()];
+                    Db::table('user_role')->insert($data);
+                }
+            }
+        }
     }
 }
