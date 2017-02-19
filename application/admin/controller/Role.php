@@ -99,4 +99,79 @@ class Role extends Controller {
         $this->assign('role',$role);
         return view();
     }
+    
+    /**
+     * 角色分配权限
+     */
+    public function addaccess()
+    {
+        if (Request::instance()->isGet()) {
+            $params = Request::instance()->param();
+//            p($params);
+            $this->assign('role_id',$params['id']); // 角色名称
+
+            // 所有权限
+            $list = Db::table('access')->field(['id','title','pid','status'])->select();
+            $list = node_merge($list);
+            // 用户权限
+            $access_user = Db::table('role_access')->where('role_id', $params['id'])->select();
+            $user_access_id = array_column($access_user, 'access_id');
+            $this->assign('user_access_id',$user_access_id); // 用户权限ID
+//            p($user_access_id);exit;
+            $this->assign('list',$list);
+            return $this->fetch('addaccess');
+        }
+        
+        if (Request::instance()->isPost()) {
+            $params = Request::instance()->param();
+            p($params);exit;
+            $role_id = $params['role_id'];
+            $access_id = empty($params['access_id']) ? array(): $params['access_id']; // 角色id
+            foreach($access_id as $k=>$v) {
+                if ($v == 'on') {
+                    unset($access_id[$k]);
+                }
+            }
+            
+            // 设置用户角色关系
+            $res = $this->_setRoleAccess($role_id, $access_id);
+            if($res) {
+                $this->success('修改成功', 'role/index');
+            } else{
+                $this->error('修改失败');
+            }
+        }
+    }
+    
+    
+    /**
+     * 角色与权限的关系
+     * @param type $role_id
+     * @param type $access_id
+     */
+    private function _setRoleAccess($role_id, $access_id=array())
+    {
+        // 通过userid 查询role_id
+        $res = Db::table('role_access')->where('role_id', $role_id)->select();
+        $role_access_id = array_column($res, 'access_id');
+        $result = array_diff($role_access_id, $access_id); // 求差集,
+//        p($access_id);
+//        p($role_access_id);
+//        p($result);exit;
+        
+        // 修改用户权限信息
+        if ($result) {  // 有值说明删除
+            foreach ($result as $key => $value) {
+                Db::table('role_access')->where(['role_id' => $role_id, 'access_id' => $value])->delete();
+            }
+        } else { // 无值进行添加
+            foreach ($access_id as $key => $value) {
+                if (!in_array($value, $role_access_id)) {
+                    $data = ['role_id' => $role_id, 'access_id' => $value, 'created_time'=> time()];
+                    Db::table('role_access')->insert($data);
+                }
+            }
+        }
+        return true;
+    }
 }
