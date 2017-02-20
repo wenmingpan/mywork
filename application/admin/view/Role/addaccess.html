@@ -1,48 +1,68 @@
-<h2 class="contentTitle">配置权限</h2>
 
+<div class="pageContent">
+	
+	<form method="post" action="/admin/role/addaccess" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+    	<input type="hidden" name="role_id" value="{$role_id}" />
+		<div class="pageFormContent" layoutH="58">
 
+			<div class="unit">
+			<label>权限角色：</label>
+			<input type="text" readonly="true" maxlength="20" class="textInput readonly" value="{$role_name}" />			
+            </div>
+			
+            <div class="unit" style="width:700px;">
+			  <table width="100%" border="0">
+  {foreach $list as $vo}     
+  <tr>
+    <td width="20%" height="30" align="right">{$vo.title}：</td>
+    <td width="80%">
+    {foreach $vo['child'] as $v}
+    <input name="access_id[]" type="checkbox" value="{$v.id}" id="" 
+		   {in name="v.id" value="$user_access_id"}checked{/in} />{$v.title}
+	{/foreach}
+    </td>
+	
+  </tr>
+{/foreach}
 
-<div style=" float:left; display:block; margin:10px; overflow:auto; width:300px; height:300px; overflow:auto; border:solid 1px #CCC; line-height:21px; background:#FFF;">
-<p></p>
-<form method="post" action="admin/role/addaccess" class="pageForm required-validate" onsubmit="return validateCallback(this)">
-<div id="resultBox"></div>
-<ul class="tree treeFolder treeCheck expand" oncheck="kkk">
-        {foreach $list as $vo}
-	<li><a >{$vo.title}</a>
-		<ul>
-                    {foreach $vo['child'] as $v}
-			<li><a tname="name" tvalue="{$v.id}" {in name="v.id" value="$user_access_id"}checked{/in}>{$v.title}</a></li>
-                    {/foreach}
-		</ul>
-	</li>
-        {/foreach}
-        
-</ul>
+ <script language="javascript">
+// Array.prototype.indexOf = function(chk){
+//	  var _self = this;
+//	  for(var i=0;i<_self.length;i++){
+//		if(_self[i]==chk){
+//			return i;
+//		}
+//	  }
+//	  return -1;
+//}
+// 
+// 
+//	var remark='';
+//	var array=remark.split(',');
+//	if(array.length>0)
+//		{
+//		for(i=0;i<array.length;i++)
+//			{
+//			if (array.indexOf(array[i])!=-1)
+//				{
+//				$('#'+array[i]).attr('checked',true);
+//				}
+//				
+//			}	
+//		}
+	</script>
+</table>
 
-<input type="hidden" name="role_id" value="{$role_id}"/>
-<input type="submit" value="Submit"/>
-</form>
+			</div>
+			
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">提交</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	
 </div>
 
-
-<script type="text/javascript">
-function kkk(){
-	var json = arguments[0], result="";
-//	alert(json.checked);
-           console.log(json);
-	$(json.items).each(function(i){
-//            alert(i);
-            alert(this.value);
-		// result += "<p>name:"+this.name + " value:"+this.value+" text: "+this.text+"</p>";
-                $("#resultBox > input[value="+this.value+"]").remove();
-                alert("input[name=checkbox value="+this.value+"]");
-		result += "<input type=checkbox name=access_id[] value="+this.value+" checked />";
-                
-//                $("#resultBox").html(result);
-//$("#resultBox").append(result);
-                
-	});
-	$("#resultBox").append(result);
-	
-}
-</script>

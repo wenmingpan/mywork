@@ -109,7 +109,9 @@ class Role extends Controller {
             $params = Request::instance()->param();
 //            p($params);
             $this->assign('role_id',$params['id']); // 角色名称
-
+            $role = Db::table('role')->field('name')->where('id', $params['id'])->find();
+            $this->assign('role_name',$role['name']);
+            
             // 所有权限
             $list = Db::table('access')->field(['id','title','pid','status'])->select();
             $list = node_merge($list);
@@ -124,21 +126,16 @@ class Role extends Controller {
         
         if (Request::instance()->isPost()) {
             $params = Request::instance()->param();
-            p($params);exit;
+//            p($params);exit;
             $role_id = $params['role_id'];
             $access_id = empty($params['access_id']) ? array(): $params['access_id']; // 角色id
-            foreach($access_id as $k=>$v) {
-                if ($v == 'on') {
-                    unset($access_id[$k]);
-                }
-            }
             
             // 设置用户角色关系
             $res = $this->_setRoleAccess($role_id, $access_id);
             if($res) {
-                $this->success('修改成功', 'role/index');
+                dwz_ajax_do(200, '修改成功', 'role');
             } else{
-                $this->error('修改失败');
+                dwz_ajax_do(300, '修改失败', 'role');
             }
         }
     }

@@ -60,7 +60,8 @@
 				<td>
 					<a title="删除" target="ajaxTodo" href="admin/role/delete/id/{$vo.id}" class="btnDel">删除</a>
 					<a title="编辑" target="dialog" rel="role" target="add" href="admin/role/edit/id/{$vo.id}" class="btnEdit">编辑</a>
-					<a title="配置权限" target="navTab" rel="role" target="add" href="admin/role/addaccess/id/{$vo.id}" >分配权限</a>
+<!--					<a title="配置权限" target="navTab" rel="role" target="add" href="admin/role/addaccess/id/{$vo.id}" >分配权限</a>-->
+					<a  href="admin/role/addaccess/id/{$vo.id}" target="dialog" title="配置权限" rel="edit_product" height="500" width='800'>配置权限</a>
 				</td>
 			</tr>
 			{/foreach}
