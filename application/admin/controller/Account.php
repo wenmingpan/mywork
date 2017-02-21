@@ -38,12 +38,14 @@ class Account extends Controller{
 
             $name = $params['name'];
             $email = $params['email'];
+            $password = $params['password'];
             $status = $params['status'];
             $role_ids = empty($params['role_id']) ? array(): $params['role_id']; // 角色id
           
             $data = [
                 'name' => $name,
                 'email' => $email,
+                'password' => md5(md5($password.'admin').'admin'),
                 'status' => $status,
                 'created_time' => time(),
                 'updated_time' => time(),
@@ -83,14 +85,19 @@ class Account extends Controller{
             $name = $params['name'];
             $email = $params['email'];
             $status = $params['status'];
+            $password = $params['password'];
             $role_ids = empty($params['role_id']) ? array(): $params['role_id']; // 角色id
-             
+            
             $data = [
                 'name' => $name,
                 'email' => $email,
                 'status' => $status,
                 'updated_time' => time(),
                 ];
+            if ($password) {
+                $data['password'] = $password;
+            }
+            
             $updated = Db::table('user')
                     ->where('id', $id)
                     ->update($data);
