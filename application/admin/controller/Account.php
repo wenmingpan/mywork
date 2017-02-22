@@ -95,7 +95,7 @@ class Account extends Controller{
                 'updated_time' => time(),
                 ];
             if ($password) {
-                $data['password'] = $password;
+                $data['password'] = md5(md5($password.'admin').'admin');
             }
             
             $updated = Db::table('user')
