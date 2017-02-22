@@ -36,12 +36,13 @@ class Login extends Controller{
             $user = Db::table('user')->where('name', $name)->find();
             $val_password = md5(md5($password.'admin').'admin');
             if ($val_password != $user['password']) {
-                Loader::action('Login/index');
+//                Loader::action('Login/index');
+                header('Location: /admin/login');exit;
             }
             
-            $this->redirect('Index/index');
+            header('Location: /admin/index');exit;
         } else {
-            Loader::action('Login/index');
+            header('Location: /admin/login');exit;
         }
         
     }
