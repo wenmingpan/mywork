@@ -16,12 +16,12 @@
 			{foreach $list as $vo}
 			<tr target="sid_user" rel="{$vo.id}">
 				
-				<td width="200">{$vo.title} | <a style="color: royalblue" title="添加操作" target="dialog" href="admin/access/addaction/pid/{$vo.id}" ><添加操作></a>
+				<td width="200">{$vo.title} | <a style="color: royalblue" title="添加操作" target="dialog" href="/admin/access/addaction/pid/{$vo.id}" ><添加操作></a>
 				</td>
 				
 				<td width="80">
-					<a title="你确定要删除吗？" target="ajaxTodo" href="admin/access/delete/id/{$vo.id}" class="btnDel">删除</a>
-					<a title="编辑" target="dialog" rel="access" target="add" href="admin/access/edit/id/{$vo.id}" class="btnEdit">编辑</a>
+					<a title="你确定要删除吗？" target="ajaxTodo" href="/admin/access/delete/id/{$vo.id}" class="btnDel">删除</a>
+					<a title="编辑" target="dialog" rel="access" target="add" href="/admin/access/edit/id/{$vo.id}" class="btnEdit">编辑</a>
 					
 				</td>
 				<td width="80"></td>
@@ -36,8 +36,8 @@
 							<td></td>
 						<td>{$v.title}</td>
 						<td>
-							<a title="你确定要删除吗？" target="ajaxTodo" href="admin/access/delete/id/{$v.id}" class="btnDel">删除</a>
-							<a title="编辑" target="dialog" rel="access" target="add" href="admin/access/editaction/id/{$v.id}" class="btnEdit">编辑</a>
+							<a title="你确定要删除吗？" target="ajaxTodo" href="/admin/access/delete/id/{$v.id}" class="btnDel">删除</a>
+							<a title="编辑" target="dialog" rel="access" target="add" href="/admin/access/editaction/id/{$v.id}" class="btnEdit">编辑</a>
 						</td>
 						</tr>
 						{/foreach}
