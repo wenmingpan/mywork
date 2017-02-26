@@ -11,6 +11,7 @@ namespace app\admin\controller;
 use think\Controller;
 use think\Request;
 use think\Db;
+use think\Session;
 
 /**
  * Description of Login
@@ -39,6 +40,7 @@ class Login extends Controller{
 //                Loader::action('Login/index');
                 header('Location: /admin/login');exit;
             }
+            Session::set('user', $user);
             
             header('Location: /admin/index');exit;
         } else {
