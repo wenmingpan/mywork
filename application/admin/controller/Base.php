@@ -29,6 +29,9 @@ class Base extends Controller{
        // 判断是否登录
        $userid = Session::get('user.useid');
        $is_admin = Session::get('user.is_admin');
+       if (!$userid) { // 不存在 跳转到登录页面
+           header('Location: /admin/index');exit;
+       }
        if($is_admin) {
            return true;
        }
@@ -42,7 +45,7 @@ class Base extends Controller{
             // User/edit
             $action = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
             if (!in_array($action, $access)) {
-                $this->error('没有权限');
+                dwz_ajax_do(300, '没有权限', '', '');
             }
        }
     }
